@@ -111,6 +111,8 @@ html, body {
   scroll-behavior: smooth;
   padding: 20px 30px 100px; /* bottom padding to avoid overlap with buttons */
   position: relative;
+  height: 100vh; /* add height to enable scrolling */
+  box-sizing: border-box; /* ensure padding included in height */
 }
 
 /* Each question card */
@@ -249,7 +251,7 @@ html, body {
 @media (max-width: 768px) {
   .mcq-container {
     flex-direction: column;
-    height: auto;
+    height: auto; /* allow container height grow on mobile */
   }
 
   .mcq-sidebar {
@@ -282,7 +284,9 @@ html, body {
 
   .mcq-main {
     padding: 16px 16px 130px;
-    height: auto;
+    height: 60vh;  /* fixed height for scroll on mobile */
+    overflow-y: auto;
+    box-sizing: border-box;
   }
 
   .submit-container {
