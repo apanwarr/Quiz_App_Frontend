@@ -7,6 +7,9 @@ const LS_SUBMITTED_KEY = 'mcq_submitted';
 
 export default function MCQQuiz() {
   const [mcqs, setMcqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [selectedAnswers, setSelectedAnswers] = useState(() => {
     try {
       const saved = localStorage.getItem(LS_ANSWERS_KEY);
@@ -29,10 +32,24 @@ export default function MCQQuiz() {
   const mainRef = useRef(null);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs`)
-      .then(res => setMcqs(res.data.mcqs))
-      .catch(err => console.error('Error fetching MCQs:', err));
+      .then(res => {
+        if (res.data && Array.isArray(res.data.mcqs)) {
+          setMcqs(res.data.mcqs);
+        } else {
+          setError('Invalid data format received from server.');
+          setMcqs([]);
+        }
+      })
+      .catch(err => {
+        setError('Failed to fetch questions. Please try again later.');
+        setMcqs([]);
+        console.error('Error fetching MCQs:', err);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -71,6 +88,14 @@ export default function MCQQuiz() {
       mainRef.current.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
     }
   };
+
+  if (loading) {
+    return <div className="loading">Loading questions... Please wait.</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   const totalAnswered = Object.keys(selectedAnswers).length;
   const correctCount = mcqs.reduce(
@@ -121,10 +146,24 @@ export default function MCQQuiz() {
       </nav>
 
       <main className="mcq-main" ref={mainRef} tabIndex={-1} aria-live="polite">
+
+        {mcqs.length > 0 && (
+          <p
+            style={{
+              fontStyle: 'italic',
+              marginBottom: '15px',
+              color: '#555',
+              textAlign: 'center',
+              fontSize: '1.1rem',
+            }}
+          >
+            Scroll down to see all questions and answer them!
+          </p>
+        )}
+
         {mcqs.map((mcq, i) => {
           const userAnswer = selectedAnswers[i];
-          const isCorrect =
-            userAnswer !== undefined && userAnswer === mcq.answer;
+          const isCorrect = userAnswer !== undefined && userAnswer === mcq.answer;
           let questionClass = 'mcq-question';
 
           if (submitted) {
