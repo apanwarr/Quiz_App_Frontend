@@ -247,6 +247,29 @@ html, body {
   color: #166534;
 }
 
+.show-correct {
+  border: 2px dashed green;
+  background-color: #e6ffe6;
+  color: #333;
+}
+
+.correct {
+  background-color: #c8f7c5;
+  border: 2px solid green;
+  color: green;
+}
+
+.incorrect {
+  background-color: #fdd;
+  border: 2px solid red;
+  color: red;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+
 /* Responsive for mobile */
 @media (max-width: 768px) {
   .mcq-container {
