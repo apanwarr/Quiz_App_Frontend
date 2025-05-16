@@ -8,7 +8,6 @@ const LS_SUBMITTED_KEY = 'mcq_submitted';
 export default function MCQQuiz() {
   const [mcqs, setMcqs] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState(() => {
-    // Load saved answers from localStorage or empty object
     try {
       const saved = localStorage.getItem(LS_ANSWERS_KEY);
       return saved ? JSON.parse(saved) : {};
@@ -16,8 +15,8 @@ export default function MCQQuiz() {
       return {};
     }
   });
+
   const [submitted, setSubmitted] = useState(() => {
-    // Load saved submit state from localStorage or false
     try {
       const saved = localStorage.getItem(LS_SUBMITTED_KEY);
       return saved === 'true';
@@ -25,25 +24,23 @@ export default function MCQQuiz() {
       return false;
     }
   });
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const mainRef = useRef(null);
 
   useEffect(() => {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs`)
-    .then(res => setMcqs(res.data.mcqs))
-    .catch(err => console.error('Error fetching MCQs:', err));
-}, []);
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs`)
+      .then(res => setMcqs(res.data.mcqs))
+      .catch(err => console.error('Error fetching MCQs:', err));
+  }, []);
 
-  // Save answers to localStorage whenever they change
   useEffect(() => {
     try {
       localStorage.setItem(LS_ANSWERS_KEY, JSON.stringify(selectedAnswers));
     } catch {}
   }, [selectedAnswers]);
 
-  // Save submitted state to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem(LS_SUBMITTED_KEY, submitted.toString());
@@ -68,7 +65,10 @@ export default function MCQQuiz() {
 
   const totalAnswered = Object.keys(selectedAnswers).length;
   const correctCount = mcqs.reduce(
-    (acc, mcq, i) => acc + (selectedAnswers[i] === mcq.answer ? 1 : 0),
+    (acc, mcq, i) =>
+      selectedAnswers[i] !== undefined && selectedAnswers[i] === mcq.answer
+        ? acc + 1
+        : acc,
     0
   );
 
@@ -97,12 +97,10 @@ export default function MCQQuiz() {
             return (
               <li
                 key={i}
-                className={`${isActive ? 'active' : ''}`}
+                className={isActive ? 'active' : ''}
                 onClick={() => scrollToQuestion(i)}
                 tabIndex={0}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') scrollToQuestion(i);
-                }}
+                onKeyDown={e => e.key === 'Enter' && scrollToQuestion(i)}
                 aria-current={isActive ? 'true' : 'false'}
               >
                 {i + 1}
@@ -131,7 +129,8 @@ export default function MCQQuiz() {
       <main className="mcq-main" ref={mainRef} tabIndex={-1} aria-live="polite">
         {mcqs.map((mcq, i) => {
           const userAnswer = selectedAnswers[i];
-          const isCorrect = userAnswer === mcq.answer;
+          const isCorrect =
+            userAnswer !== undefined && userAnswer === mcq.answer;
           let questionClass = 'mcq-question';
 
           if (submitted) {
