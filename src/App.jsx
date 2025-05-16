@@ -32,7 +32,7 @@ export default function MCQQuiz() {
   useEffect(() => {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs`)
-    .then(res => setMcqs(res.data))
+    .then(res => setMcqs(res.data.mcqs))
     .catch(err => console.error('Error fetching MCQs:', err));
 }, []);
 
