@@ -5,6 +5,16 @@ import './index.css';
 const LS_ANSWERS_KEY = 'mcq_selectedAnswers';
 const LS_SUBMITTED_KEY = 'mcq_submitted';
 
+// Fisher-Yates shuffle
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export default function MCQQuiz() {
   const [mcqs, setMcqs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +48,8 @@ export default function MCQQuiz() {
       .get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs`)
       .then(res => {
         if (res.data && Array.isArray(res.data.mcqs)) {
-          setMcqs(res.data.mcqs);
+          const shuffled = shuffleArray(res.data.mcqs);
+          setMcqs(shuffled);
         } else {
           setError('Invalid data format received from server.');
           setMcqs([]);
@@ -73,6 +84,7 @@ export default function MCQQuiz() {
   const handleSubmit = () => setSubmitted(true);
 
   const handleRestart = () => {
+    setMcqs(prev => shuffleArray(prev));
     setSelectedAnswers({});
     setSubmitted(false);
     setCurrentQuestionIndex(0);
@@ -146,7 +158,6 @@ export default function MCQQuiz() {
       </nav>
 
       <main className="mcq-main" ref={mainRef} tabIndex={-1} aria-live="polite">
-
         {mcqs.length > 0 && (
           <p
             style={{
