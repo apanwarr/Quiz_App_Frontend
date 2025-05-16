@@ -30,10 +30,11 @@ export default function MCQQuiz() {
   const mainRef = useRef(null);
 
   useEffect(() => {
-    axios.get('/api/mcqs')
-      .then(res => setMcqs(res.data.mcqs))
-      .catch(console.error);
-  }, []);
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs`)
+    .then(res => setMcqs(res.data))
+    .catch(err => console.error('Error fetching MCQs:', err));
+}, []);
 
   // Save answers to localStorage whenever they change
   useEffect(() => {
