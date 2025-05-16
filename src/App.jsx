@@ -55,6 +55,15 @@ export default function MCQQuiz() {
 
   const handleSubmit = () => setSubmitted(true);
 
+  const handleRestart = () => {
+    setSelectedAnswers({});
+    setSubmitted(false);
+    setCurrentQuestionIndex(0);
+    localStorage.removeItem(LS_ANSWERS_KEY);
+    localStorage.removeItem(LS_SUBMITTED_KEY);
+    if (mainRef.current) mainRef.current.scrollTo({ top: 0 });
+  };
+
   const scrollToQuestion = index => {
     setCurrentQuestionIndex(index);
     const el = document.getElementById(`question-${index}`);
@@ -74,20 +83,8 @@ export default function MCQQuiz() {
 
   return (
     <div className="mcq-container">
-      {/* Main Heading */}
-      <h1
-        style={{
-          textAlign: 'center',
-          margin: '1rem 0',
-          fontSize: '2rem',
-          fontWeight: '700',
-          color: '#1e40af',
-        }}
-      >
-        Digital Marketing MCQ Quiz
-      </h1>
+      <h1 className="mcq-heading">Digital Marketing MCQ Quiz</h1>
 
-      {/* Sidebar */}
       <nav className="mcq-sidebar" aria-label="Question navigation">
         <h2>Questions</h2>
         <ul>
@@ -97,10 +94,12 @@ export default function MCQQuiz() {
             return (
               <li
                 key={i}
-                className={isActive ? 'active' : ''}
+                className={`${isActive ? 'active' : ''}`}
                 onClick={() => scrollToQuestion(i)}
                 tabIndex={0}
-                onKeyDown={e => e.key === 'Enter' && scrollToQuestion(i)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') scrollToQuestion(i);
+                }}
                 aria-current={isActive ? 'true' : 'false'}
               >
                 {i + 1}
@@ -115,17 +114,12 @@ export default function MCQQuiz() {
           })}
         </ul>
         {submitted && (
-          <div
-            className="score-display"
-            aria-live="polite"
-            style={{ marginTop: 'auto', textAlign: 'center' }}
-          >
+          <div className="score-display" aria-live="polite">
             Score: {correctCount} / {mcqs.length}
           </div>
         )}
       </nav>
 
-      {/* Main content */}
       <main className="mcq-main" ref={mainRef} tabIndex={-1} aria-live="polite">
         {mcqs.map((mcq, i) => {
           const userAnswer = selectedAnswers[i];
@@ -185,7 +179,6 @@ export default function MCQQuiz() {
         })}
       </main>
 
-      {/* Submit button */}
       <div className="submit-container">
         {!submitted ? (
           <>
@@ -201,9 +194,14 @@ export default function MCQQuiz() {
             </button>
           </>
         ) : (
-          <div className="score-display" aria-live="polite">
-            Your final score is {correctCount} out of {mcqs.length}
-          </div>
+          <>
+            <div className="score-display" aria-live="polite">
+              Your final score is {correctCount} out of {mcqs.length}
+            </div>
+            <button onClick={handleRestart} className="restart-btn">
+              Restart Quiz
+            </button>
+          </>
         )}
       </div>
     </div>
