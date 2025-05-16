@@ -169,17 +169,16 @@ export default function MCQQuiz() {
                 {Object.entries(mcq.options).map(([key, text]) => {
                   const isSelected = userAnswer === key;
 
-                  const optionClass = submitted
-                    ? isSelected
-                      ? key === mcq.answer
-                        ? 'correct'
-                        : 'incorrect'
-                      : key === mcq.answer
-                      ? 'correct'
-                      : ''
-                    : isSelected
-                    ? 'selected'
-                    : '';
+                  const optionClass = submitted && userAnswer != null
+                        ? isSelected
+                          ? key === mcq.answer
+                            ? 'correct'
+                            : 'incorrect'
+                          : ''
+                        : isSelected
+                        ? 'selected'
+                        : '';
+
 
                   return (
                     <label key={key} className={optionClass}>
