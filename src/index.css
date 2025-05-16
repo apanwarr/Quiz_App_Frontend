@@ -213,6 +213,22 @@ body, html {
   color: #166534;
 }
 
+.restart-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background-color: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.restart-btn:hover {
+  background-color: #1d4ed8;
+}
+
+
 /* Responsive for mobile */
 @media (max-width: 768px) {
   .mcq-container {
