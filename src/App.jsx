@@ -51,27 +51,21 @@ export default function MCQQuiz() {
           setMcqs(shuffled);
         } else {
           setError('Invalid data format received from server.');
-          setMcqs([]);
         }
       })
       .catch(err => {
         setError('Failed to fetch questions. Please try again later.');
-        setMcqs([]);
         console.error('Error fetching MCQs:', err);
       })
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(LS_ANSWERS_KEY, JSON.stringify(selectedAnswers));
-    } catch {}
+    localStorage.setItem(LS_ANSWERS_KEY, JSON.stringify(selectedAnswers));
   }, [selectedAnswers]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(LS_SUBMITTED_KEY, submitted.toString());
-    } catch {}
+    localStorage.setItem(LS_SUBMITTED_KEY, submitted.toString());
   }, [submitted]);
 
   const handleSelect = (index, option) => {
@@ -101,13 +95,8 @@ export default function MCQQuiz() {
     }
   };
 
-  if (loading) {
-    return <div className="loading">Loading questions... Please wait.</div>;
-  }
-
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+  if (loading) return <div className="loading">Loading questions... Please wait.</div>;
+  if (error) return <div className="error">{error}</div>;
 
   const totalAnswered = Object.keys(selectedAnswers).length;
   const correctCount = mcqs.reduce((acc, mcq) => {
@@ -134,13 +123,9 @@ export default function MCQQuiz() {
                 onKeyDown={e => {
                   if (e.key === 'Enter') scrollToQuestion(i);
                 }}
-                aria-current={isActive ? 'true' : 'false'}
               >
                 {i + 1}
-                <span
-                  className={`status ${answered ? 'answered' : 'unanswered'}`}
-                  aria-label={answered ? 'Answered' : 'Unanswered'}
-                >
+                <span className={`status ${answered ? 'answered' : 'unanswered'}`}>
                   {answered ? '✓' : '✗'}
                 </span>
               </li>
@@ -148,32 +133,22 @@ export default function MCQQuiz() {
           })}
         </ul>
         {submitted && (
-          <div className="score-display" aria-live="polite">
+          <div className="score-display">
             Score: {correctCount} / {mcqs.length}
           </div>
         )}
       </nav>
 
-      <main className="mcq-main" ref={mainRef} tabIndex={-1} aria-live="polite">
-        {mcqs.length > 0 && (
-          <p
-            style={{
-              fontStyle: 'italic',
-              marginBottom: '15px',
-              color: '#555',
-              textAlign: 'center',
-              fontSize: '1.1rem',
-            }}
-          >
-            Scroll down to see all questions and answer them!
-          </p>
-        )}
+      <main className="mcq-main" ref={mainRef} tabIndex={-1}>
+        <p className="info-text">
+          Scroll down to see all questions and answer them!
+        </p>
 
         {mcqs.map((mcq, i) => {
           const userAnswer = selectedAnswers[mcq.id];
           const isCorrect = userAnswer !== undefined && userAnswer === mcq.answer;
-          let questionClass = 'mcq-question';
 
+          let questionClass = 'mcq-question';
           if (submitted) {
             if (userAnswer == null) questionClass += ' unanswered';
             else if (isCorrect) questionClass += ' correct';
@@ -186,9 +161,8 @@ export default function MCQQuiz() {
               key={mcq.id}
               className={questionClass}
               tabIndex={-1}
-              aria-labelledby={`question-label-${i}`}
             >
-              <p id={`question-label-${i}`}>
+              <p>
                 {i + 1}. {mcq.question}
               </p>
               <div className="mcq-options">
@@ -201,8 +175,8 @@ export default function MCQQuiz() {
                         ? 'correct'
                         : 'incorrect'
                       : key === mcq.answer
-                      ? 'show-correct'
-                      : 'disabled'
+                      ? 'correct'
+                      : ''
                     : isSelected
                     ? 'selected'
                     : '';
@@ -216,7 +190,6 @@ export default function MCQQuiz() {
                         checked={isSelected}
                         disabled={submitted}
                         onChange={() => handleSelect(i, key)}
-                        aria-checked={isSelected}
                       />
                       <strong>{key}.</strong> {text}
                     </label>
@@ -231,20 +204,17 @@ export default function MCQQuiz() {
       <div className="submit-container">
         {!submitted ? (
           <>
-            <div>
-              Answered: {totalAnswered} / {mcqs.length}
-            </div>
+            <div>Answered: {totalAnswered} / {mcqs.length}</div>
             <button
               onClick={handleSubmit}
               disabled={totalAnswered === 0}
-              aria-disabled={totalAnswered === 0}
             >
               Submit
             </button>
           </>
         ) : (
           <>
-            <div className="score-display" aria-live="polite">
+            <div className="score-display">
               Your final score is {correctCount} out of {mcqs.length}
             </div>
             <button onClick={handleRestart} className="restart-btn">
