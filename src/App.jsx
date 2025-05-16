@@ -5,7 +5,6 @@ import './index.css';
 const LS_ANSWERS_KEY = 'mcq_selectedAnswers';
 const LS_SUBMITTED_KEY = 'mcq_submitted';
 
-// Fisher-Yates shuffle
 function shuffleArray(array) {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -77,7 +76,8 @@ export default function MCQQuiz() {
 
   const handleSelect = (index, option) => {
     if (!submitted) {
-      setSelectedAnswers(prev => ({ ...prev, [index]: option }));
+      const questionId = mcqs[index].id;
+      setSelectedAnswers(prev => ({ ...prev, [questionId]: option }));
     }
   };
 
@@ -110,13 +110,10 @@ export default function MCQQuiz() {
   }
 
   const totalAnswered = Object.keys(selectedAnswers).length;
-  const correctCount = mcqs.reduce(
-    (acc, mcq, i) =>
-      selectedAnswers[i] !== undefined && selectedAnswers[i] === mcq.answer
-        ? acc + 1
-        : acc,
-    0
-  );
+  const correctCount = mcqs.reduce((acc, mcq) => {
+    const userAnswer = selectedAnswers[mcq.id];
+    return userAnswer === mcq.answer ? acc + 1 : acc;
+  }, 0);
 
   return (
     <div className="mcq-container">
@@ -125,12 +122,12 @@ export default function MCQQuiz() {
       <nav className="mcq-sidebar" aria-label="Question navigation">
         <h2>Questions</h2>
         <ul>
-          {mcqs.map((_, i) => {
-            const answered = selectedAnswers.hasOwnProperty(i);
+          {mcqs.map((mcq, i) => {
+            const answered = selectedAnswers.hasOwnProperty(mcq.id);
             const isActive = i === currentQuestionIndex;
             return (
               <li
-                key={i}
+                key={mcq.id}
                 className={`${isActive ? 'active' : ''}`}
                 onClick={() => scrollToQuestion(i)}
                 tabIndex={0}
@@ -173,7 +170,7 @@ export default function MCQQuiz() {
         )}
 
         {mcqs.map((mcq, i) => {
-          const userAnswer = selectedAnswers[i];
+          const userAnswer = selectedAnswers[mcq.id];
           const isCorrect = userAnswer !== undefined && userAnswer === mcq.answer;
           let questionClass = 'mcq-question';
 
@@ -186,7 +183,7 @@ export default function MCQQuiz() {
           return (
             <section
               id={`question-${i}`}
-              key={i}
+              key={mcq.id}
               className={questionClass}
               tabIndex={-1}
               aria-labelledby={`question-label-${i}`}
