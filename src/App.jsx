@@ -194,19 +194,21 @@ export default function MCQQuiz() {
               <div className="mcq-options">
                 {Object.entries(mcq.options).map(([key, text]) => {
                   const isSelected = userAnswer === key;
+
+                  const optionClass = submitted
+                    ? isSelected
+                      ? key === mcq.answer
+                        ? 'correct'
+                        : 'incorrect'
+                      : key === mcq.answer
+                      ? 'show-correct'
+                      : 'disabled'
+                    : isSelected
+                    ? 'selected'
+                    : '';
+
                   return (
-                    <label
-                      key={key}
-                      className={`${isSelected ? 'selected' : ''} ${
-                        submitted
-                          ? key === mcq.answer
-                            ? 'correct'
-                            : isSelected
-                            ? 'incorrect'
-                            : 'disabled'
-                          : ''
-                      }`}
-                    >
+                    <label key={key} className={optionClass}>
                       <input
                         type="radio"
                         name={`question-${i}`}
