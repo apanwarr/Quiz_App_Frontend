@@ -247,6 +247,18 @@ html, body {
   color: #166534;
 }
 
+.clear-btn {
+  margin-top: 0.5rem;
+  background-color: #eee;
+  border: 1px solid #aaa;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.clear-btn:hover {
+  background-color: #ddd;
+}
+
 
 /* Responsive for mobile */
 @media (max-width: 768px) {
