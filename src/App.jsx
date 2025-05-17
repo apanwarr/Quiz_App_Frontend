@@ -75,6 +75,15 @@ export default function MCQQuiz() {
     }
   };
 
+  const handleClearChoice = (index) => {
+    const questionId = mcqs[index].id;
+    setSelectedAnswers(prev => {
+      const updated = { ...prev };
+      delete updated[questionId];
+      return updated;
+    });
+  };
+
   const handleSubmit = () => setSubmitted(true);
 
   const handleRestart = () => {
@@ -170,15 +179,14 @@ export default function MCQQuiz() {
                   const isSelected = userAnswer === key;
 
                   const optionClass = submitted && userAnswer != null
-                        ? isSelected
-                          ? key === mcq.answer
-                            ? 'correct'
-                            : 'incorrect'
-                          : ''
-                        : isSelected
-                        ? 'selected'
-                        : '';
-
+                    ? key === mcq.answer
+                      ? 'correct'
+                      : isSelected
+                      ? 'incorrect'
+                      : ''
+                    : isSelected
+                    ? 'selected'
+                    : '';
 
                   return (
                     <label key={key} className={optionClass}>
@@ -195,6 +203,15 @@ export default function MCQQuiz() {
                   );
                 })}
               </div>
+
+              {!submitted && userAnswer != null && (
+                <button
+                  className="clear-btn"
+                  onClick={() => handleClearChoice(i)}
+                >
+                  Clear Choice
+                </button>
+              )}
             </section>
           );
         })}
