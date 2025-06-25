@@ -41,7 +41,7 @@ export default function MCQQuiz({ dataset }) {
   useEffect(() => {
     setLoading(true);
     setError(null);
-      axios.get(`http://localhost:3000/api/mcqs/${dataset}`)
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/mcqs/${dataset}`)
       .then(res => {
         if (res.data && Array.isArray(res.data.mcqs)) {
           const shuffled = shuffleArray(res.data.mcqs);
