@@ -439,3 +439,67 @@ html, body {
     padding: 1.5rem;
   }
 }
+
+/* Extra small screens (375px and below) */
+@media (max-width: 400px) {
+  .home-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .home-container p {
+    font-size: 1rem;
+  }
+
+  .quiz-card {
+    padding: 1rem 1.2rem;
+    width: 90%;
+  }
+
+  .quiz-card h2 {
+    font-size: 1.2rem;
+  }
+
+  .quiz-card p {
+    font-size: 0.95rem;
+  }
+
+  .mcq-main {
+    padding: 12px 12px 140px;
+  }
+
+  .mcq-options label {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .submit-container {
+    padding: 10px 12px;
+  }
+
+  .submit-container button {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+
+  .score-display {
+    font-size: 1rem;
+  }
+
+  .logout-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .mcq-sidebar li {
+    min-width: 32px;
+    font-size: 0.75rem;
+    padding: 5px 8px;
+  }
+
+  .status {
+    width: 14px;
+    height: 14px;
+    font-size: 0.6rem;
+    line-height: 14px;
+  }
+}
