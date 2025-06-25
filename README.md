@@ -1,4 +1,4 @@
-###React + Express
+### React + Express
 
 <h2>How to Handle CORS in React + Express (Vite + Node)</h2>
 
